@@ -40,8 +40,11 @@ public class CarService {
     public List<Car> list() {
         List<Car> carList =  repository.findAll();
         for(Car car : carList) {
-            car.setPrice(pricingWebClient.getPrice(car.getId().toString()));
-            car.setLocation(mapWebClient.getAddress(car.getLocation()));
+            car.setPrice(pricingWebClient
+                    .getPrice(car.getId().toString()));
+
+            car.setLocation(mapWebClient
+                    .getAddress(car.getLocation()));
         }
 
         return carList;
@@ -53,15 +56,17 @@ public class CarService {
      * @return the requested car's information, including location and price
      */
     public Car findById(Long id) {
-        Optional<Car> carOptional = repository.findById(id);
-        if(!carOptional.isPresent()) {
+        Optional<Car> carById = repository.findById(id);
+        if(!carById.isPresent()) {
             throw new CarNotFoundException("Car not found!");
         }
-        Car car = carOptional.get();
+        Car car = carById.get();
 
-        car.setPrice(pricingWebClient.getPrice(id.toString()));
+        car.setPrice(pricingWebClient
+                .getPrice(id.toString()));
 
-        car.setLocation(mapWebClient.getAddress(car.getLocation()));
+        car.setLocation(mapWebClient
+                .getAddress(car.getLocation()));
 
         return car;
     }
@@ -73,13 +78,14 @@ public class CarService {
      */
     public Car save(Car car) {
         if (car.getId() != null) {
-            return repository.findById(car.getId())
-                    .map(carToBeUpdated -> {
-                        carToBeUpdated.setDetails(car.getDetails());
-                        carToBeUpdated.setLocation(car.getLocation());
-                        carToBeUpdated.setPrice(car.getPrice());
-                        return repository.save(carToBeUpdated);
-                    }).orElseThrow(CarNotFoundException::new);
+            Optional<Car> carToUpdate = repository.findById(car.getId());
+            if(!carToUpdate.isPresent()) {
+                throw new CarNotFoundException("Car not found!");
+            }
+            carToUpdate.get().setDetails(car.getDetails());
+            carToUpdate.get().setLocation(car.getLocation());
+            carToUpdate.get().setPrice(car.getPrice());
+            return repository.save(carToUpdate.get());
         }
         else {
             return repository.save(car);
@@ -91,10 +97,10 @@ public class CarService {
      * @param id the ID number of the car to delete
      */
     public void delete(Long id) {
-        Optional<Car> carOptional = repository.findById(id);
-        if(!carOptional.isPresent()) {
+        Optional<Car> carToDelete = repository.findById(id);
+        if(!carToDelete.isPresent()) {
             throw new CarNotFoundException("Car not found!");
         }
-        repository.delete(carOptional.get());
+        repository.delete(carToDelete.get());
     }
 }

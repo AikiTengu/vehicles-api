@@ -2,10 +2,7 @@ package com.udacity.vehicles.client.prices;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -36,7 +33,8 @@ public class PriceClient {
     public String getPrice(@RequestParam String vehicleId) {
         try {
             RestTemplate restTemplate = new RestTemplate();
-            Price price = restTemplate.getForObject("http://localhost:8762/prices/"+vehicleId, Price.class);
+            Price price = restTemplate
+                    .getForObject("http://localhost:8762/prices/"+vehicleId, Price.class);
             return String.format("%s %s", price.getCurrency(), price.getPrice());
         } catch (Exception e) {
             log.error("Unexpected error retrieving price", e);
