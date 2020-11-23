@@ -40,7 +40,7 @@ public class CarService {
     public List<Car> list() {
         List<Car> carList =  repository.findAll();
         for(Car car : carList) {
-            car.setPrice(pricingWebClient.getPrice(car.getId()));
+            car.setPrice(pricingWebClient.getPrice(car.getId().toString()));
             car.setLocation(mapWebClient.getAddress(car.getLocation()));
         }
 
@@ -59,7 +59,7 @@ public class CarService {
         }
         Car car = carOptional.get();
 
-        car.setPrice(pricingWebClient.getPrice(id));
+        car.setPrice(pricingWebClient.getPrice(id.toString()));
 
         car.setLocation(mapWebClient.getAddress(car.getLocation()));
 
