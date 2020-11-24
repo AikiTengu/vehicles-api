@@ -4,6 +4,8 @@ import com.udacity.vehicles.client.maps.MapsClient;
 import com.udacity.vehicles.client.prices.PriceClient;
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.domain.car.CarRepository;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,6 +84,7 @@ public class CarService {
             if(!carToUpdate.isPresent()) {
                 throw new CarNotFoundException("Car not found!");
             }
+            carToUpdate.get().setCondition(car.getCondition());
             carToUpdate.get().setDetails(car.getDetails());
             carToUpdate.get().setLocation(car.getLocation());
             carToUpdate.get().setPrice(car.getPrice());
